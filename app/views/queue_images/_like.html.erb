@@ -1,14 +1,14 @@
 <div class="like_panel_<%= item.id %>">
   <div class="likeTextStyle textAboutStyle"><%= item.likes_count %></div>
   <div class="likeStyle">
-  <% if client_signed_in? %>
-    <% if policy(item).like_image? %>
-      <%= link_to(image_tag("/unlike.png", alt:"like", class: "imagesStyle"), "/queue_images/#{item.id}/like", method: :put, remote: true) %>
+    <% if client_signed_in? %>
+      <% if policy(item).like_image? %>
+        <%= link_to(image_tag("/unlike.png", alt: "like", class: "imagesStyle"), "/queue_images/#{item.id}/like", method: :put, remote: true) %>
+      <% else %>
+        <%= link_to(image_tag("/like.png", alt: "like", class: "imagesStyle"), "/queue_images/#{item.id}/unlike", method: :put, remote: true) %>
+      <% end %>
     <% else %>
-      <%= link_to(image_tag("/like.png", alt:"like", class: "imagesStyle"), "/queue_images/#{item.id}/unlike", method: :put, remote: true)%>
+      <%= link_to(image_tag("/unlike.png", alt: "like", class: "imagesStyle"), new_client_registration_path) %>
     <% end %>
-  <% else %>
-      <%= link_to(image_tag("/unlike.png", alt:"like", class: "imagesStyle"), new_client_registration_path) %>
-  <% end %>
   </div>
 </div>

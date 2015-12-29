@@ -27,17 +27,17 @@ en:
         client:
           attributes:
             email:
-              blank: "Пожалуйста, укажите Ваш email адрес"
-              taken: "Данный email уже существует в системе"
-              invalid: "Пожалуйста, проверьте написание Вашего email адреса"
+              blank: "Please provide your email address"
+              taken: "This email already exists in the system"
+              invalid: "Please check the spelling of your email address"
             password:
-              blank: "Пожалуйста, укажите пароль"
-              confirmation: "Пароль не очень"
+              blank: "Please provide a password"
+              confirmation: "Password is not very good"
             password_confirmation:
-              blank: "Пожалуйста, укажите подтверждение пароля"
-              confirmation: "Подтверждение пароля введено не верно"
+              blank: "Please provide password confirmation"
+              confirmation: "Password confirmation is incorrect"
             name:
-              blank: "Пожалуйста, укажите Ваше имя"
-              taken: "Аккаунт с таким ником уже существует"
+              blank: "Please provide your name"
+              taken: "An account with this nickname already exists"
             avatar:
-              blank: "Пожалуйста, укажите аватарку"
+              blank: "Please provide an avatar"

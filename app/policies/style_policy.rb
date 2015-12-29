@@ -4,6 +4,7 @@ class StylePolicy < ApplicationPolicy
       scope
     end
   end
+
   def mark?
     true
   end

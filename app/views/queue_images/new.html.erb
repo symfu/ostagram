@@ -4,17 +4,15 @@
 
       <%= form_for(@queue_image) do |f| %>
           <div class="actions">
-          <%= f.submit "Добавить в обработку", class: "btn btn-large btn-primary" %>
+          <%= f.submit "Add to processing", class: "btn btn-large btn-primary" %>
           </div>
           <br>
           <div class="field">
-            <%= f.label "Обрабатываемое изображение:" %><br>
+            <%= f.label "Image to process:" %><br>
             <%= f.file_field :content_image %>
           </div>
 
           <%= render :partial => "view_style", :locals => {view_style: @view_style, :queue_image => @queue_image} %>
-
-
 
       <% end %>
     </div>

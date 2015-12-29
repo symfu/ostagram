@@ -7,7 +7,7 @@ class ImageMailer < ApplicationMailer
   #
   def send_image(user, iter, max_iter, file)
       attachments['out.png'] = file
-      mail(to: user.email, subject: "Ваше изображение обработано")
+      mail(to: user.email, subject: "Your image has been processed")
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml

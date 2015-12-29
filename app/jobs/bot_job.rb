@@ -3,7 +3,6 @@ class BotJob
   include ConstHelper
   include WorkerHelper
 
-
   def initialize
     @worker_name = :bot1
     @admin_email = "xxx@gmail.com"
@@ -31,12 +30,11 @@ class BotJob
     @with_init_params = par["with_init_params"]
     @init_params = []
     if @with_init_params
-      par["init_params"].each { |k,v|  @init_params.push v }
+      par["init_params"].each { |k, v| @init_params.push v }
     end
     par["init_params"] = ''
     log "config: #{par.to_s}"
   end
-
 
   def execute
     log('-----------------------Start-------------------')
@@ -70,7 +68,6 @@ class BotJob
         end
       end
 
-
       if @with_init_params
         i = 0
         loop do
@@ -80,18 +77,16 @@ class BotJob
             log("Queue busy 2")
             next
           end
-          create_queue(ci,si,@init_params[i])
+          create_queue(ci, si, @init_params[i])
           i += 1
           start_workers
         end
         si.update(status: 103)
       else
-        create_queue(ci,si,nil)
+        create_queue(ci, si, nil)
         start_workers
       end
       log('----------Loop end----------')
-      #
-      #break
     end
   end
 
@@ -111,7 +106,6 @@ class BotJob
   private
 
   def check_idle
-    #q = QueueImage.where("status = #{STATUS_NOT_PROCESSED} or status = #{STATUS_IN_PROCESS}")
     if @user_priority
       q = QueueImage.where("status = #{STATUS_NOT_PROCESSED} or status = #{STATUS_IN_PROCESS}")
     else
@@ -136,9 +130,8 @@ class BotJob
     ci[r]
   end
 
-   def log(msg)
-     write_log(msg, @worker_name.to_s) if @debug
-   end
-
+  def log(msg)
+    write_log(msg, @worker_name.to_s) if @debug
+  end
 
 end

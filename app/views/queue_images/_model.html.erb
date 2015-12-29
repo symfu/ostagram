@@ -1,13 +1,13 @@
 <li id="<%= model.id %>">
   <div class="row">
     <div class="col-md-2">
-      <%= link_to(image_tag(model.avatar.thumb.url, alt:model.name, class: "productImage"), model) if model.avatar? %>
+      <%= link_to(image_tag(model.avatar.thumb.url, alt: model.name, class: "productImage"), model) if model.avatar? %>
     </div>
     <div class="col-md-10">
       <span class="user">
         <% if current_user.admin? %>
           (<%= truncate(model.shopname, :length => 15) %>)
-        <%end%>
+        <% end %>
         <%= link_to truncate(model.name, :length => 150), model %>
 
       </span>
@@ -15,31 +15,31 @@
       <span class="timestamp"> </span>
       <% if current_user.admin? || current_user.vendor? %>
         <%= link_to "delete", model, method: :delete,
-                  data: { confirm: "You sure?" },
-                  title: model.name %>
-      <%end%>
+                    data: { confirm: "You sure?" },
+                    title: model.name %>
+      <% end %>
 
-      <% if current_user.client? && !model.pro && !model.shopname.blank?%>
+      <% if current_user.client? && !model.pro && !model.shopname.blank? %>
           <span class="timestamp">
               <%= link_to "BUY", model, method: :post %>
           </span>
 
-      <%end%>
+      <% end %>
 
 
       <% if current_user.admin? %>
 
-          <% if !model.pro.nil? && model.pro? %>
+        <% if !model.pro.nil? && model.pro? %>
             <span class="timestamp">
               <%= link_to "PRO", model, method: :put %>
             </span>
-          <% else %>
+        <% else %>
             <span class="timestamp">
               <%= link_to "UNPRO", model, method: :put %>
             </span>
-          <% end %>
+        <% end %>
 
-      <%end%>
+      <% end %>
 
     </div>
   </div>

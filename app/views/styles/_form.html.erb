@@ -1,20 +1,20 @@
-<%= form_for(@style, :html => {:multipart => true}) do |f| %>
+<%= form_for(@style, :html => { :multipart => true }) do |f| %>
   <% if @style.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@style.errors.count, "error") %> prohibited this style from being saved:</h2>
 
       <ul>
-      <% @style.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+        <% @style.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
-    <div class="content">
-      <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><%= image_tag(@style.image, alt:@style.image, class: "imagesStyle") if !@style.image.blank? %></div>
-      </div>
+  <div class="content">
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><%= image_tag(@style.image, alt: @style.image, class: "imagesStyle") if !@style.image.blank? %></div>
     </div>
+  </div>
 
   <div class="field">
     <%= f.label :image %><br>

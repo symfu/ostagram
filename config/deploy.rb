@@ -1,16 +1,14 @@
 # config valid only for current version of Capistrano
 
 lock '3.4.0'
-# Эти параметры необходимо поменять
+# These parameters need to be changed
 set :application, 'ostagram'
 set :username, 'deploy'
-
-
 
 set :repo_url, 'git@github.com:SergeyMorugin/ostagram.git'
 set :reils_env, 'production'
 set :branch, 'develop'
-#set :shared_path, ''
+# set :shared_path, ''
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
@@ -45,11 +43,10 @@ set :linked_dirs, %w{bundle}
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-set :default_env, {rvm_bin_path: '~/.rvm/bin'}
-
+set :default_env, { rvm_bin_path: '~/.rvm/bin' }
 
 namespace :setup do
-  desc 'Загрузка конфигурационных файлов на удаленный сервер'
+  desc 'Upload configuration files to remote server'
   task :upload_config do
     on roles :all do
       execute :mkdir, "-p #{shared_path}"
@@ -66,7 +63,7 @@ namespace :setup do
       ['shared/config', 'shared/run', 'shared/log', 'shared/db'].each do |f|
         upload!(f, shared_path, recursive: true)
       end
-      #before "deploy:migrate", :create_db
+      # before "deploy:migrate", :create_db
       # Make simlink to nginx config
       sudo :ln, "-fs #{shared_path}/config/unicorn.conf /etc/nginx/conf.d/#{fetch(:application)}.conf"
       invoke :deploy
@@ -75,19 +72,19 @@ namespace :setup do
 end
 
 namespace :nginx do
-  desc 'Создание симлинка в /etc/nginx/conf.d на nginx.conf приложения'
+  desc 'Create symlink in /etc/nginx/conf.d for nginx.conf of the application'
   task :append_config do
     on roles :all do
       sudo :ln, "-fs #{shared_path}/config/unicorn.conf /etc/nginx/conf.d/#{fetch(:application)}.conf"
     end
   end
-  desc 'Релоад nginx'
+  desc 'Reload nginx'
   task :reload do
     on roles :all do
       sudo :service, :nginx, :reload
     end
   end
-  desc 'Рестарт nginx'
+  desc 'Restart nginx'
   task :restart do
     on roles :all do
       sudo :service, :nginx, :restart
@@ -110,25 +107,19 @@ set :unicorn_config, "#{shared_path}/config/unicorn.rb"
 set :unicorn_pid, "#{shared_path}/run/unicorn.pid"
 
 namespace :application do
-  desc 'Запуск Unicorn'
+  desc 'Start Unicorn'
   task :start do
     on roles(:all) do
 
       within release_path do
         with rails_env: fetch(:rails_env) do
           execute "cd #{release_path} && (RAILS_ENV=#{fetch(:stage)}  ~/.rvm/bin/rvm default do bundle exec unicorn -c #{fetch(:unicorn_config)} -D)"
-          #execute :bundle, "exec unicorn -c #{fetch(:unicorn_config)}"
+          # execute :bundle, "exec unicorn -c #{fetch(:unicorn_config)}"
         end
       end
-      #execute "cd #{fetch(:deploy_to)}/current"
-      #{fetch(:deploy_to)}/current
-      #execute "~/.rvm/bin/rvm default"
-      #:bundle, :exec,
-      #run "#{fetch(:deploy_to)}/current/bundle exec unicorn_rails -c #{fetch(:unicorn_config)} -E production -D"
-      #execute bundl exec unicorn_rails -D"
     end
   end
-  desc 'Завершение Unicorn'
+  desc 'Stop Unicorn'
   task :stop do
     on roles(:app) do
       execute "if [ -f #{fetch(:unicorn_pid)} ] && [ -e /proc/$(cat #{fetch(:unicorn_pid)}) ]; then kill -9 `cat #{fetch(:unicorn_pid)}`; fi"
@@ -136,11 +127,8 @@ namespace :application do
   end
 end
 
-
-
-
 namespace :deploy do
-  desc 'Подготовка deploy'
+  desc 'Prepare deploy'
 
   task :migrate do
     on roles(:all) do
@@ -152,9 +140,8 @@ namespace :deploy do
     end
   end
 
-
   namespace :linking do
-    desc 'Создание симлинка на изображения'
+    desc 'Create symlink for images'
     task :uploads do
       on roles :all do
         sudo :ln, "-s /home/deploy/disk600/server/ostagram/public/uploads #{release_path}/public/uploads "
@@ -172,22 +159,8 @@ namespace :deploy do
     end
   end
 
-
-  #before 'deploy:setup', 'git:push'
   after :finishing, 'deploy:migrate'
   after :finishing, 'linking:uploads'
   after :finishing, 'deploy:precompile'
- # after :finishing, 'application:stop'
-  #after :finishing, 'application:stop'
-  #after :finishing, 'application:start'
-  #after :finishing, 'nginx:reload'
   after :finishing, :cleanup
-  #after :restart, :clear_cache do
-  # on roles(:web), in: :groups, limit: 3, wait: 10 do
-  # Here we can do anything such as:
-  # within release_path do
-  #   execute :rake, 'cache:clear'
-  # end
-  #end
-  #end
 end

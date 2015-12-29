@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.4'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
-gem 'pg'
+# gem 'pg', '~> 0.18.4' 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -26,21 +26,13 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'bootstrap-sass', '~> 3.3.5'
 
-#gem 'devise', '~> 3.5.2'
-
-gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
+gem 'carrierwave', '~> 0.10.0'
 
 gem 'mini_magick'
-
-#gem 'rmagick'
-
-#gem 'cloudinary'
 
 gem 'net-ssh'
 
 gem 'net-scp'
-
-#gem 'sidekiq'
 
 gem 'resque'
 
@@ -53,18 +45,6 @@ gem 'will_paginate'
 gem 'google-analytics-rails'
 
 gem 'pundit'
-#gem 'kaminari'
-#gem 'lightbox-bootstrap-rails'
-#gem 'resue-scheduler'
-
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-# Use Unicorn as the app server
-# gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

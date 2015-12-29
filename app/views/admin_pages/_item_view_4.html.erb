@@ -1,44 +1,44 @@
 <% debug = false %>
 
-<%item = item_view_4 %>
-<%res_img = item.result_image %>
+<% item = item_view_4 %>
+<% res_img = item.result_image %>
 
 <div class="row styleRow2-lg">
 
-        <div class="visible-lg  col-lg-2 col-lg-offset-2 userAvatarStyle-lg" >
-          <%= link_to(image_tag(item.content.image.thumb200.url, alt:item.content.image, class: "imagesStyle"), item.content.image.url, class: "imagesStyle", data:{ lightbox: "content"}) %>
-        </div>
-        <div class="visible-lg  col-lg-2 userAvatarStyle-lg">
-          <%= link_to(image_tag(item.style.image.thumb200.url, alt:item.style.image, class: "imagesStyle"), item.style.image.url, class: "imagesStyle", data:{ lightbox: "content"}) %>
-        </div>
+  <div class="visible-lg  col-lg-2 col-lg-offset-2 userAvatarStyle-lg">
+    <%= link_to(image_tag(item.content.image.thumb200.url, alt: item.content.image, class: "imagesStyle"), item.content.image.url, class: "imagesStyle", data: { lightbox: "content" }) %>
+  </div>
+  <div class="visible-lg  col-lg-2 userAvatarStyle-lg">
+    <%= link_to(image_tag(item.style.image.thumb200.url, alt: item.style.image, class: "imagesStyle"), item.style.image.url, class: "imagesStyle", data: { lightbox: "content" }) %>
+  </div>
 
 
-        <div class="hidden-lg col-md-2 col-sm-3 col-xs-3 col-md-offset-2 userAvatarStyle-lg" >
-          <%= image_tag(item.content.image.thumb200.url, class: "imagesStyle")%>
-        </div>
-        <div class="hidden-lg col-md-2 col-sm-3 col-xs-3 userAvatarStyle-lg">
-          <%= link_to(image_tag(item.style.image.thumb200.url, alt:item.style.image, class: "imagesStyle"), item.style.image.url, class: "imagesStyle") %>
-        </div>
+  <div class="hidden-lg col-md-2 col-sm-3 col-xs-3 col-md-offset-2 userAvatarStyle-lg">
+    <%= image_tag(item.content.image.thumb200.url, class: "imagesStyle") %>
+  </div>
+  <div class="hidden-lg col-md-2 col-sm-3 col-xs-3 userAvatarStyle-lg">
+    <%= link_to(image_tag(item.style.image.thumb200.url, alt: item.style.image, class: "imagesStyle"), item.style.image.url, class: "imagesStyle") %>
+  </div>
 
-        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 userAvatarStyle-lg">
-          <div class="visible-lg" >
-            <%= link_to(image_tag(res_img.imageurl.thumb400.url, alt:res_img.imageurl, class: "imagesStyle"), res_img.imageurl.url, class: "imagesStyle", data:{ lightbox: "content"})  if res_img %>
-          </div>
-          <div class="hidden-lg" >
-            <%= link_to(image_tag(res_img.imageurl.thumb400.url, alt:res_img.imageurl, class: "imagesStyle"), res_img.imageurl.url, class: "imagesStyle")  if res_img %>
-          </div>
-        </div>
+  <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 userAvatarStyle-lg">
+    <div class="visible-lg">
+      <%= link_to(image_tag(res_img.imageurl.thumb400.url, alt: res_img.imageurl, class: "imagesStyle"), res_img.imageurl.url, class: "imagesStyle", data: { lightbox: "content" }) if res_img %>
+    </div>
+    <div class="hidden-lg">
+      <%= link_to(image_tag(res_img.imageurl.thumb400.url, alt: res_img.imageurl, class: "imagesStyle"), res_img.imageurl.url, class: "imagesStyle") if res_img %>
+    </div>
+  </div>
 
-        <div class=" col-lg-2 col-md-2 col-sm-3 col-xs-3 ">
-          <span class="textAboutStyle"><%= item.client.email if !item.client.nil? %></span>
-          <span class="textAboutStyle"><%= (item.created_at+10800).strftime("%d.%m.%Y %H:%M:%S")%></span><br>
-          <span class="textAboutStyle"><%= "like: #{Like.where(queue_id: item.id).count}" %></span>
+  <div class=" col-lg-2 col-md-2 col-sm-3 col-xs-3 ">
+    <span class="textAboutStyle"><%= item.client.email if !item.client.nil? %></span>
+    <span class="textAboutStyle"><%= (item.created_at + 10800).strftime("%d.%m.%Y %H:%M:%S") %></span><br>
+    <span class="textAboutStyle"><%= "like: #{Like.where(queue_id: item.id).count}" %></span>
 
-          <div id="qi_status_<%= item.id %>">
-            <span class="textAboutStyle"><%= get_queue_item_status(item) %></span>
-          </div>
-          <%= link_to 'SHOW', queue_image_path(item) %><br>
-        </div>
+    <div id="qi_status_<%= item.id %>">
+      <span class="textAboutStyle"><%= get_queue_item_status(item) %></span>
+    </div>
+    <%= link_to 'SHOW', queue_image_path(item) %><br>
+  </div>
 
 </div>
 
@@ -49,23 +49,23 @@
 </div>
 
 <div class="row">
-      <div class=" col-lg-offset-1 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <%= render  partial: 'statuses', :locals => {item: item}  %>
-      </div>
+  <div class=" col-lg-offset-1 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <%= render partial: 'statuses', :locals => { item: item } %>
+  </div>
 </div>
 
 <% if @pimage_show %>
-<div class="row">
-  <div class="col-lg-offset-2 col-md-offset-2 col-lg-8 col-md-8 col-sm-12 col-xs-12">
   <div class="row">
-  <% item.pimages.each do |pi| %>
-      <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 userAvatarStyle-lg ">
-        <%= link_to(image_tag(pi.imageurl.thumb400.url, alt:pi.imageurl, class: "imagesStyle"), pi.imageurl.url, class: "imagesStyle", data:{ lightbox: "content"})  if res_img %>
+    <div class="col-lg-offset-2 col-md-offset-2 col-lg-8 col-md-8 col-sm-12 col-xs-12">
+      <div class="row">
+        <% item.pimages.each do |pi| %>
+          <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 userAvatarStyle-lg ">
+            <%= link_to(image_tag(pi.imageurl.thumb400.url, alt: pi.imageurl, class: "imagesStyle"), pi.imageurl.url, class: "imagesStyle", data: { lightbox: "content" }) if res_img %>
+          </div>
+        <% end %>
       </div>
-  <% end %>
+    </div>
   </div>
-  </div>
-</div>
 <% end %>
 
 

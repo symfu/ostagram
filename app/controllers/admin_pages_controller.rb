@@ -11,7 +11,6 @@ class AdminPagesController < ApplicationController
     AdminPage
   end
 
-
   def main
 
   end
@@ -19,9 +18,9 @@ class AdminPagesController < ApplicationController
   def images
     st = params[:status]
     if !st.nil? && st.to_i
-      @items= QueueImage.where(status: st.to_i).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
+      @items = QueueImage.where(status: st.to_i).order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
     else
-      @items= QueueImage.all.order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
+      @items = QueueImage.all.order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
     end
     @pimage_show = false
     pis = params[:pimage]
@@ -47,7 +46,7 @@ class AdminPagesController < ApplicationController
   end
 
   def unregworkers
-    Resque.workers.each {|w| w.unregister_worker}
+    Resque.workers.each { |w| w.unregister_worker }
     redirect_to admin_pages_main_path
     return
   end
@@ -91,6 +90,7 @@ class AdminPagesController < ApplicationController
   end
 
   private
+
   def set_authorize
     authorize AdminPage
   end

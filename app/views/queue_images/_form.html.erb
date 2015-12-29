@@ -3,37 +3,37 @@
   <div class="row">
     <div class="col-lg-offset-4 col-lg-4 col-md-12 col-sm-12 col-xs-12">
 
-    <%= form_for(@queue_image) do |f| %>
-      <% if @queue_image.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@queue_image.errors.count, "error") %> Неверно заполненные данные:</h2>
+      <%= form_for(@queue_image) do |f| %>
+        <% if @queue_image.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@queue_image.errors.count, "error") %> Incorrectly filled data:</h2>
 
-          <ul>
-          <% @queue_image.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-          </ul>
+            <ul>
+              <% @queue_image.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+
+        <div class="field">
+          <%= f.label "Image to process:" %><br>
+          <%= f.file_field :content_image %>
+        </div>
+        <div class="field hidden">
+          <%= f.label "Upload from file:" %><br>
+          <%= f.check_box :from_file, { checked: true } %>
+        </div>
+        <div class="field">
+          <%= f.label "Template:" %><br>
+          <%= f.file_field :style_image %>
+        </div>
+
+        <div class="actions">
+          <%= f.submit "Add to processing", class: "btn btn-large btn-primary" %>
         </div>
       <% end %>
-
-
-      <div class="field">
-        <%= f.label "Обрабатываемое изображение:" %><br>
-        <%= f.file_field :content_image %>
-      </div>
-      <div class="field hidden">
-         <%= f.label "Загрузить из файла:" %><br>
-         <%= f.check_box :from_file, {checked: true} %>
-      </div>
-      <div class="field">
-        <%= f.label "Шаблон:"%><br>
-        <%= f.file_field :style_image %>
-      </div>
-
-      <div class="actions">
-        <%= f.submit "Добавить в обработку", class: "btn btn-large btn-primary" %>
-      </div>
-    <% end %>
 
     </div>
   </div>

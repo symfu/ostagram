@@ -1,45 +1,45 @@
-
 <div id="view_style">
-  <p>Выберите из галереи или загрузите из файла изображение-фильтр, стиль которого будет использоваться. Обработка одного изображения займет от 2 до 4 мин.</p>
+  <p>Choose from gallery or upload from file an image-filter, the style of which will be used. Processing
+    one image will take from 2 to 4 minutes.</p>
   <% if view_style == ConstHelper::VIEW_STYLE_LOAD_FILE %>
-    <%= link_to "ИЗ ГАЛЕРЕИ", url_for(controller: 'queue_images', action: 'new', view_style: ConstHelper::VIEW_STYLE_FROM_LIST), remote: true, class: "btn btn-large btn-default" %>
-    <%= link_to "ИЗ ФАЙЛА", url_for(controller: 'queue_images', action: 'new', view_style: ConstHelper::VIEW_STYLE_LOAD_FILE), remote: true, class: "btn btn-large btn-success"  %>
+    <%= link_to "FROM GALLERY", url_for(controller: 'queue_images', action: 'new', view_style: ConstHelper::VIEW_STYLE_FROM_LIST), remote: true, class: "btn btn-large btn-default" %>
+    <%= link_to "FROM FILE", url_for(controller: 'queue_images', action: 'new', view_style: ConstHelper::VIEW_STYLE_LOAD_FILE), remote: true, class: "btn btn-large btn-success" %>
 
     <div class="field">
       <br>
-      <%= label_tag "Загрузите файл фильтра:"%><br>
-      <%= file_field_tag 'queue_image[style_image]'%>
+      <%= label_tag "Upload filter file:" %><br>
+      <%= file_field_tag 'queue_image[style_image]' %>
     </div>
-    <% if policy(queue_image).process_params?%>
+    <% if policy(queue_image).process_params? %>
       <div class="field">
-        <%= label_tag "Параметры инициализации:"%><br>
+        <%= label_tag "Initialization parameters:" %><br>
         <%= text_field_tag 'queue_image[init]', "-gpu 0 -backend cudnn -image_size 700 -style_scale 1 -num_iterations 1000" %>
       </div>
       <div class="field">
-        <%= label_tag "Статус после обработки:"%><br>
+        <%= label_tag "Status after processing:" %><br>
         <%= number_field_tag 'queue_image[end_status]', 101 %>
       </div>
     <% end %>
   <% end %>
 
 
-  <% if view_style == ConstHelper::VIEW_STYLE_FROM_LIST%>
-      <%= link_to "ИЗ ГАЛЕРЕИ", url_for(controller: 'queue_images', action: 'new', view_style: ConstHelper::VIEW_STYLE_FROM_LIST), remote: true, class: "btn btn-large btn-success" %>
-      <%= link_to "ИЗ ФАЙЛА", url_for(controller: 'queue_images', action: 'new', view_style: ConstHelper::VIEW_STYLE_LOAD_FILE), remote: true, class: "btn btn-large btn-default"  %>
-      <br><br>
-      <div class="row">
-        <% Style.where(status: ConstHelper::GALLERY_STYLE_IMAGE).order('use_counter desc').each do |si| %>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 clearLRpadding" style="position	: relative;">
-              <%= link_to(image_tag(si.image.thumb200.url, class: "imagesStyle roundImageStyle"), "/styles/#{si.id}/mark", method: :put, remote: true)  %>
-              <div id="mark_style_<%= si.id %>">
+  <% if view_style == ConstHelper::VIEW_STYLE_FROM_LIST %>
+    <%= link_to "FROM GALLERY", url_for(controller: 'queue_images', action: 'new', view_style: ConstHelper::VIEW_STYLE_FROM_LIST), remote: true, class: "btn btn-large btn-success" %>
+    <%= link_to "FROM FILE", url_for(controller: 'queue_images', action: 'new', view_style: ConstHelper::VIEW_STYLE_LOAD_FILE), remote: true, class: "btn btn-large btn-default" %>
+    <br><br>
+    <div class="row">
+      <% Style.where(status: ConstHelper::GALLERY_STYLE_IMAGE).order('use_counter desc').each do |si| %>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 clearLRpadding" style="position  : relative;">
+          <%= link_to(image_tag(si.image.thumb200.url, class: "imagesStyle roundImageStyle"), "/styles/#{si.id}/mark", method: :put, remote: true) %>
+          <div id="mark_style_<%= si.id %>">
 
-              </div>
-            </div>
-        <% end %>
-      </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
   <% end %>
 
-  <%= hidden_field_tag 'queue_image[view_style]', view_style%>
+  <%= hidden_field_tag 'queue_image[view_style]', view_style %>
 
 
 </div>

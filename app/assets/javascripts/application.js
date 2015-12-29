@@ -18,16 +18,15 @@
 
 //= require_tree .
 
-
-$(document).ready(function() {
-    if ($('.pagination').length) {
-        $(window).scroll(function() {
-            var url = $('.pagination .next_page').attr('href');
-            if (url && $(window).scrollTop() > $(document).height() - $(window).height() - 1000) {
-                $('.pagination').text("Пожалуста подождите...");
-                return $.getScript(url);
-            }
-        });
-        return $(window).scroll();
-    }
-});
+$(document).ready(function () {
+  if ($('.pagination').length) {
+    $(window).scroll(function () {
+      var url = $('.pagination .next_page').attr('href')
+      if (url && $(window).scrollTop() > $(document).height() - $(window).height() - 1000) {
+        $('.pagination').text('Please wait...')
+        return $.getScript(url)
+      }
+    })
+    return $(window).scroll()
+  }
+})

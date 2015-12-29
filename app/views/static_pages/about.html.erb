@@ -1,36 +1,45 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
-        <h3>Привет</h3>
-        <p>  На нашем <a href="http://ostagram.ru/lenta">портале</a> вы можете прикоснуться к искусству, не умея рисовать и даже ровно писать. Загрузив фотографию, которую хотите обработать, и фото,
-         стиль которого будет использоваться, вы можете получить совершенно неожиданный результат, который не мог присниться даже в детстве. </p>
-        <p>Для примера, берем фото вашей девушки (если конечно она у вас есть, привет Женек),</p>
-        <%=image_tag("/megan.jpg", class: "imagesStyle")%>
-        <p></p>
-        <p>и добавляем немного искусства, стоимостью около десяти миллионов мужских носков,</p>
+      <h3>Hello</h3>
+      <p> On our <a href="http://ostagram.ru/lenta">portal</a> you can touch art without knowing how to draw and
+        even write properly. By uploading a photo that you want to process, and a photo,
+        the style of which will be used, you can get a completely unexpected result that couldn't
+        even be dreamed of in childhood. </p>
+      <p>For example, we take a photo of your girlfriend (if of course you have one, hello Zhenek),</p>
+      <%= image_tag("/megan.jpg", class: "imagesStyle") %>
+      <p></p>
+      <p>and add a bit of art, worth about ten million men's socks,</p>
 
-        <%=image_tag("/starry_night.jpg", class: "imagesStyle")%>
-        <p></p>
-        <p>получаем шедевр, который можно повесить напротив плиты.</p>
-        <%=image_tag("/starry_megan.png", class: "imagesStyle")%>
-        <p></p>
-        <p>  Процесс создания картины компьютером конечно не настолько трудоемок, как попытаться нарисовать ее самому, но занимает продолжительное время. Скажем так, обычному домашнему компьютеру требутся на это полтора-два часа.
-          Поэтому не стоит ждать результат мгновенно, а стоит полистать <a href="http://ostagram.ru/lenta">ленту</a> уже готовых работ компьютерного Ван Гога. <p>
+      <%= image_tag("/starry_night.jpg", class: "imagesStyle") %>
+      <p></p>
+      <p>we get a masterpiece that can be hung opposite the stove.</p>
+      <%= image_tag("/starry_megan.png", class: "imagesStyle") %>
+      <p></p>
+      <p> The process of creating a painting by computer is of course not as labor-intensive as trying to draw it yourself, but
+        it takes a long time. Let's say that an ordinary home computer needs one and a half to two hours for this.
+        Therefore, you should not expect the result instantly, but rather browse through the <a href="http://ostagram.ru/lenta">feed</a> of already
+        finished works of the computer Van Gogh.
+      <p>
 
-        <p>  А теперь заумный текст, который я сам не понимаю. Для создания картин используется сверточные нейронные сети и алгоритм художественно стиля by Leon A. Gatys, Alexander S. Ecker, and Matthias Bethge.
-          Более подробно с этим порталом можно познакомиться по ссылке на <a href="https://github.com/SergeyMorugin/ostagram">GitHub</a>.</p>
+      <p> And now the smart text that I don't understand myself. For creating paintings, convolutional neural networks and
+        artistic style algorithm by Leon A. Gatys, Alexander S. Ecker, and Matthias Bethge are used.
+        You can learn more about this portal by following the link to
+        <a href="https://github.com/SergeyMorugin/ostagram">GitHub</a>.</p>
 
-        <p>  Для добавления фото необходимо зарегистрироваться. Процесс прост как пять копеек, а в подарок вы будете получать свои обработанные фото на почту, как только они «нарисуются».</p>
-        <p> Если есть вопросы и предложения пишите на почту:</p> <div class="textUserStyle-lg"><p>info@ostagram.ru</p></div>
-        <p> <a href="https://vk.com/ostagram_ru">Вконтакте</a></p>
-        <p> <a href="https://www.instagram.com/ostagram.ru/ ">Instagram</a></p>
+      <p> To add a photo, you need to register. The process is as simple as five kopecks, and as a gift you will
+        receive your processed photos by email as soon as they are "drawn".</p>
+      <p> If you have questions and suggestions, write to:</p>
+      <div class="textUserStyle-lg"><p>info@ostagram.ru</p></div>
+      <p><a href="https://vk.com/ostagram_ru">VKontakte</a></p>
+      <p><a href="https://www.instagram.com/ostagram.ru/ ">Instagram</a></p>
       <% if !client_signed_in? %>
         <div class="actions">
-          <%= link_to "Зарегистрироваться", new_client_registration_path , class: "btn btn-primary btn-large", style: "width: 100%" %>
+          <%= link_to "Register", new_client_registration_path, class: "btn btn-primary btn-large", style: "width: 100%" %>
         </div>
         <h3></h3>
         <div class="actions">
-          <%= link_to "Перейти к просмотру", lenta_path, class: "btn btn-primary", style: "width: 100%" %>
+          <%= link_to "Go to view", lenta_path, class: "btn btn-primary", style: "width: 100%" %>
         </div>
       <% end %>
     </div>
@@ -38,5 +47,4 @@
   </div>
 
 
-
- </div>
+</div>

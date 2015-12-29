@@ -4,6 +4,7 @@ class AdminPagePolicy < ApplicationPolicy
       scope
     end
   end
+
   def main?
     !user.nil? && user.admin?
   end

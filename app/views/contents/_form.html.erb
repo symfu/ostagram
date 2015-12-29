@@ -1,20 +1,20 @@
-<%= form_for(@content, :html => {:multipart => true}) do |f| %>
+<%= form_for(@content, :html => { :multipart => true }) do |f| %>
   <% if @content.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@content.errors.count, "error") %> prohibited this content from being saved:</h2>
 
       <ul>
-      <% @content.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+        <% @content.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
-    <div class="content">
-      <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><%= image_tag(@content.image, alt:@content.image, class: "imagesStyle") if !@content.image.blank? %></div>
-      </div>
+  <div class="content">
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><%= image_tag(@content.image, alt: @content.image, class: "imagesStyle") if !@content.image.blank? %></div>
     </div>
+  </div>
 
   <div class="field">
     <%= f.label :image %><br>

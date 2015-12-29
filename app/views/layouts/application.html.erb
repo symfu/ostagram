@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= full_title(yield(:title)) %></title>
-    <%= stylesheet_link_tag "application", media: "all",
-                                           "data-turbolinks-track" => true %>
-    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-    <%= csrf_meta_tags %>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <%= render 'layouts/shim' %>
-    <%= analytics_init if Rails.env.production? %>
-  </head>
-  <body>
-    <%= render 'layouts/header' %>
+<head>
+  <title><%= full_title(yield(:title)) %></title>
+  <%= stylesheet_link_tag "application", media: "all",
+                          "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= render 'layouts/shim' %>
+  <%= analytics_init if Rails.env.production? %>
+</head>
+<body>
+<%= render 'layouts/header' %>
 
-    <div class="container">
-      <% if notice %>
-        <label class="successMessage"><%= notice %></label>
-      <% end %>
-      <% if alert %>
-          <label class="errorMessage"><%= alert %></label>
-      <% end %>
-      <% flash.each do |key, value| %>
-      <% end %>
-      <%= yield %>
-      <%= render 'layouts/footer' %>
-    </div>
-  </body>
+<div class="container">
+  <% if notice %>
+    <label class="successMessage"><%= notice %></label>
+  <% end %>
+  <% if alert %>
+    <label class="errorMessage"><%= alert %></label>
+  <% end %>
+  <% flash.each do |key, value| %>
+  <% end %>
+  <%= yield %>
+  <%= render 'layouts/footer' %>
+</div>
+</body>
 </html>
