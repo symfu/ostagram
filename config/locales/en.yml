@@ -36,8 +36,5 @@ en:
             password_confirmation:
               blank: "Please provide password confirmation"
               confirmation: "Password confirmation is incorrect"
-            name:
-              blank: "Please provide your name"
-              taken: "An account with this nickname already exists"
             avatar:
               blank: "Please provide an avatar"

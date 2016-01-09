@@ -3,10 +3,14 @@ class QueueImage < ActiveRecord::Base
   belongs_to :client
   belongs_to :content
   belongs_to :style
-  has_many :likes, foreign_key: "queue_id"
+  has_many :likes, foreign_key: "queue_id", dependent: :destroy
 
   scope :last_n_days, lambda { |d| where('ftime > ?', Time.now - d.days) }
-
+  
+  validates :progress, numericality: { greater_than_or_equal_to: 0.0 }
+  
+  after_commit :update_likes_count, on: [:create, :update, :destroy]
+  
   def time_ago
     return '' if updated_at.nil?
     t_ago = (Time.now - updated_at) / 60
@@ -44,5 +48,15 @@ class QueueImage < ActiveRecord::Base
     if pimages.count > 0
       pimages.all.order('created_at DESC').first
     end
+  end
+  
+  def update_likes_count!
+    update_column(:likes_count, likes.count)
+  end
+  
+  private
+  
+  def update_likes_count
+    update_likes_count!
   end
 end
