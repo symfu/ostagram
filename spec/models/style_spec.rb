@@ -16,8 +16,8 @@ RSpec.describe Style, type: :model do
   describe 'database schema' do
     it 'has required columns' do
       expect(Style.column_names).to include(
-        'id', 'image', 'init', 'status', 'use_counter', 'created_at', 'updated_at'
-      )
+                                      'id', 'image', 'init', 'status', 'use_counter', 'created_at', 'updated_at'
+                                    )
     end
 
     it 'has correct column types' do
@@ -32,7 +32,7 @@ RSpec.describe Style, type: :model do
     let(:style) { create(:style) }
 
     it 'sets default status to 0' do
-      expect(style.status).to eq(0) # STATUS_HIDDEN
+      expect(style.status).to eq(Style::STATUS_HIDDEN)
     end
 
     it 'sets default use_counter to 0' do
@@ -67,13 +67,8 @@ RSpec.describe Style, type: :model do
 
   describe 'status values' do
     it 'accepts valid status values' do
-      expect(build(:style, status: -100)).to be_valid # STATUS_DELETED
-      expect(build(:style, status: -1)).to be_valid   # STATUS_ERROR
-      expect(build(:style, status: 0)).to be_valid    # STATUS_HIDDEN
-      expect(build(:style, status: 1)).to be_valid    # STATUS_NOT_PROCESSED
-      expect(build(:style, status: 2)).to be_valid    # STATUS_IN_PROCESS
-      expect(build(:style, status: 11)).to be_valid   # STATUS_PROCESSED
-      expect(build(:style, status: 101)).to be_valid  # STATUS_PROCESSED_BY_BOT
+      expect(build(:style, status: Style::BOT_STYLE_IMAGE)).to be_valid
+      expect(build(:style, status: Style::GALLERY_STYLE_IMAGE)).to be_valid
     end
   end
 
@@ -160,31 +155,6 @@ RSpec.describe Style, type: :model do
     end
   end
 
-  describe 'status transitions' do
-    let(:style) { create(:style) }
-
-    it 'can transition from hidden to active' do
-      expect(style.status).to eq(0) # STATUS_HIDDEN
-      style.update!(status: 1) # STATUS_NOT_PROCESSED
-      expect(style.status).to eq(1)
-    end
-
-    it 'can transition to processed' do
-      style.update!(status: 11) # STATUS_PROCESSED
-      expect(style.status).to eq(11)
-    end
-
-    it 'can transition to error' do
-      style.update!(status: -1) # STATUS_ERROR
-      expect(style.status).to eq(-1)
-    end
-
-    it 'can transition to deleted' do
-      style.update!(status: -100) # STATUS_DELETED
-      expect(style.status).to eq(-100)
-    end
-  end
-
   describe 'model validations' do
     it 'enforces image presence' do
       expect {
@@ -203,7 +173,7 @@ RSpec.describe Style, type: :model do
 
     it 'updates updated_at when modified' do
       original_updated_at = style.updated_at
-      style.update!(status: 1)
+      style.update!(status: Style::BOT_STYLE_IMAGE)
       expect(style.updated_at).to be > original_updated_at
     end
   end
@@ -218,7 +188,7 @@ RSpec.describe Style, type: :model do
 
     it 'can be updated with new image' do
       new_image = Rack::Test::UploadedFile.new(
-        Rails.root.join('spec', 'fixtures', 'test_content.jpg'), 
+        Rails.root.join('spec', 'fixtures', 'test_content.jpg'),
         'image/jpeg'
       )
       style.update!(image: new_image)
@@ -227,72 +197,25 @@ RSpec.describe Style, type: :model do
   end
 
   describe 'scopes and queries' do
-    let!(:hidden_style) { create(:style, status: 0) }
-    let!(:active_style) { create(:style, status: 1) }
-    let!(:processed_style) { create(:style, status: 11) }
-    let!(:popular_style) { create(:style, use_counter: 100) }
 
-    it 'can find style by status' do
-      expect(Style.where(status: 0)).to include(hidden_style)
-      expect(Style.where(status: 1)).to include(active_style)
-      expect(Style.where(status: 11)).to include(processed_style)
-    end
+    describe 'init field usage' do
+      it 'can store various init values' do
+        init_values = ['starry_night', 'mona_lisa', 'wave', 'scream', nil]
 
-    it 'can find active styles' do
-      active_styles = Style.where('status > ?', 0)
-      expect(active_styles).to include(active_style, processed_style)
-      expect(active_styles).not_to include(hidden_style)
-    end
-
-    it 'can find popular styles' do
-      popular_styles = Style.where('use_counter > ?', 50)
-      expect(popular_styles).to include(popular_style)
-      expect(popular_styles).not_to include(hidden_style, active_style, processed_style)
-    end
-
-    it 'can order by use_counter' do
-      ordered_styles = Style.order(:use_counter)
-      expect(ordered_styles.first).to eq(hidden_style)
-      expect(ordered_styles.last).to eq(popular_style)
-    end
-  end
-
-  describe 'popularity tracking' do
-    let(:style) { create(:style) }
-
-    it 'tracks usage count' do
-      expect(style.use_counter).to eq(0)
-      
-      style.increment!(:use_counter)
-      expect(style.use_counter).to eq(1)
-      
-      style.increment!(:use_counter)
-      expect(style.use_counter).to eq(2)
-    end
-
-    it 'can be marked as popular' do
-      style.update!(use_counter: 100)
-      expect(style.use_counter).to be >= 100
-    end
-  end
-
-  describe 'init field usage' do
-    it 'can store various init values' do
-      init_values = ['starry_night', 'mona_lisa', 'wave', 'scream', nil]
-      
-      init_values.each do |init_value|
-        style = create(:style, init: init_value)
-        expect(style.init).to eq(init_value)
+        init_values.each do |init_value|
+          style = create(:style, init: init_value)
+          expect(style.init).to eq(init_value)
+        end
       end
-    end
 
-    it 'can be searched by init value' do
-      create(:style, init: 'starry_night')
-      create(:style, init: 'mona_lisa')
-      
-      starry_styles = Style.where(init: 'starry_night')
-      expect(starry_styles.count).to eq(1)
-      expect(starry_styles.first.init).to eq('starry_night')
+      it 'can be searched by init value' do
+        create(:style, init: 'starry_night')
+        create(:style, init: 'mona_lisa')
+
+        starry_styles = Style.where(init: 'starry_night')
+        expect(starry_styles.count).to eq(1)
+        expect(starry_styles.first.init).to eq('starry_night')
+      end
     end
   end
 end

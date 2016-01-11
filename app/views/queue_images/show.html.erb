@@ -24,7 +24,7 @@
       <span class="textAboutStyle"><%= "like: #{Like.where(queue_id: item.id).count} #{item.likes_count}" %></span>
 
       <div id="qi_status_<%= item.id %>">
-        <span class="textAboutStyle"><%= get_queue_item_status(item) %></span>
+        <span class="textAboutStyle"><%= item.get_queue_item_status %></span>
       </div>
     </div>
   </div>

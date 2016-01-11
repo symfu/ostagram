@@ -34,7 +34,7 @@
 
   <div class=" col-lg-2 col-md-2 col-sm-3 col-xs-3 ">
     <span class="textAboutStyle"><%= (item.created_at + 10800).strftime("%d.%m.%Y %H:%M:%S") %></span><br>
-    <span class="textAboutStyle"><%= get_queue_item_status(item) %></span><br>
+    <span class="textAboutStyle"><%= item.get_queue_item_status %></span><br>
     <span class="textAboutStyle">
             <% if policy(item).destroy? %>
               <%= link_to "DELETE", item, method: :delete, data: { confirm: "Are you sure you want to delete?" } %>
@@ -47,7 +47,7 @@
             <% end %>
 
           </span>
-    <% if item.status == ConstHelper::STATUS_IN_PROCESS %>
+          <% if item.status == QueueImage::STATUS_IN_PROCESS %>
       <div class="progressBar">
         <span style="width: <%= item.progress.to_i%>%"></span>
       </div>

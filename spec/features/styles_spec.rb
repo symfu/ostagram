@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'Styles', type: :feature do
   let(:client) { create(:client, :confirmed) }
   let(:admin) { create(:client, :admin, :confirmed) }
-  let(:style) { create(:style, status: 201) } # GALLERY_STYLE_IMAGE
+  let(:style) { create(:style, status: Style::GALLERY_STYLE_IMAGE) } # GALLERY_STYLE_IMAGE
 
   context 'Style Management' do
     scenario 'Admin can create a new style' do
@@ -12,7 +12,7 @@ RSpec.feature 'Styles', type: :feature do
       
       attach_file 'style_image', Rails.root.join('spec', 'fixtures', 'test_style.jpg')
       fill_in 'style_init', with: '-gpu 0 -backend cudnn -image_size 700'
-      fill_in 'style_status', with: '201'
+      fill_in 'style_status', with: Style::GALLERY_STYLE_IMAGE.to_s
       
       click_button 'Create Style'
       
@@ -45,7 +45,7 @@ RSpec.feature 'Styles', type: :feature do
 
     scenario 'Admin can delete a style' do
       sign_in admin
-      create(:style, status: 201)
+      create(:style, status: Style::GALLERY_STYLE_IMAGE)
       visit styles_path
       
       expect(page).to have_content('Styles')
@@ -69,7 +69,7 @@ RSpec.feature 'Styles', type: :feature do
   context 'Style Gallery' do
     scenario 'Regular user cannot view styles index' do
       sign_in client
-      create_list(:style, 5, status: 201)
+      create_list(:style, 5, status: Style::GALLERY_STYLE_IMAGE)
       
       visit styles_path
       
@@ -85,7 +85,7 @@ RSpec.feature 'Styles', type: :feature do
 
     scenario 'Admin can view all styles' do
       sign_in admin
-      create_list(:style, 5, status: 201)
+      create_list(:style, 5, status: Style::GALLERY_STYLE_IMAGE)
       
       visit styles_path
       
@@ -94,10 +94,10 @@ RSpec.feature 'Styles', type: :feature do
 
     scenario 'Admin can view styles by status' do
       sign_in admin
-      create_list(:style, 3, status: 201) # GALLERY_STYLE_IMAGE
-      create_list(:style, 2, status: 101) # BOT_STYLE_IMAGE
+      create_list(:style, 3, status: Style::GALLERY_STYLE_IMAGE) 
+      create_list(:style, 2, status: Style::BOT_STYLE_IMAGE) 
       
-      visit styles_path(status: 201)
+      visit styles_path(status: Style::GALLERY_STYLE_IMAGE)
       
       expect(page).to have_selector('.row', count: 3)
     end
@@ -114,7 +114,7 @@ RSpec.feature 'Styles', type: :feature do
   context 'Style Selection' do
     scenario 'Gallery view shows available styles' do
       sign_in client
-      create_list(:style, 3, status: 201)
+      create_list(:style, 3, status: Style::GALLERY_STYLE_IMAGE)
       
       visit new_queue_image_path(view_style: 1)
       
@@ -125,7 +125,7 @@ RSpec.feature 'Styles', type: :feature do
 
     scenario 'Gallery view shows styles in grid layout' do
       sign_in client
-      create_list(:style, 3, status: 201)
+      create_list(:style, 3, status: Style::GALLERY_STYLE_IMAGE)
       
       visit new_queue_image_path(view_style: 1)
       
@@ -138,11 +138,11 @@ RSpec.feature 'Styles', type: :feature do
       sign_in admin
       visit edit_style_path(style)
       
-      fill_in 'style_status', with: '101' # BOT_STYLE_IMAGE
+      fill_in 'style_status', with: Style::BOT_STYLE_IMAGE.to_s 
       click_button 'Update Style'
       
       expect(page).to have_content('style was successfully updated.')
-      expect(style.reload.status).to eq(101)
+      expect(style.reload.status).to eq(Style::BOT_STYLE_IMAGE)
     end
 
     scenario 'Style use counter can be manually updated' do
@@ -185,7 +185,7 @@ RSpec.feature 'Styles', type: :feature do
   context 'Pagination' do
     scenario 'Styles are paginated' do
       sign_in admin
-      create_list(:style, 15, status: 201)
+      create_list(:style, 15, status: Style::GALLERY_STYLE_IMAGE)
       
       visit styles_path
       
@@ -197,7 +197,7 @@ RSpec.feature 'Styles', type: :feature do
   context 'Image Processing' do
     scenario 'Style can be used in image processing' do
       sign_in client
-      create(:style, status: 201) # GALLERY_STYLE_IMAGE
+      create(:style, status: Style::GALLERY_STYLE_IMAGE)
       
       visit new_queue_image_path(view_style: 1)
       
@@ -209,7 +209,7 @@ RSpec.feature 'Styles', type: :feature do
 
     scenario 'Style with custom parameters can be used' do
       sign_in admin
-      custom_style = create(:style, status: 201, init: '-gpu 0 -backend cudnn -image_size 500')
+      custom_style = create(:style, status: Style::GALLERY_STYLE_IMAGE, init: '-gpu 0 -backend cudnn -image_size 500')
       
       visit new_queue_image_path(view_style: 1)
       

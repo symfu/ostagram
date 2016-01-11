@@ -40,18 +40,18 @@ class QueueImagePolicy < ApplicationPolicy
   # DELETE /queue_images/1
   # DELETE /queue_images/1.json
   def destroy?
-    user.admin? || (user.user? && user.id == record.client_id && (record.status == ConstHelper::STATUS_NOT_PROCESSED ||
-      record.status == ConstHelper::STATUS_PROCESSED))
+    user.admin? || (user.user? && user.id == record.client_id && (record.status == QueueImage::STATUS_NOT_PROCESSED ||
+      record.status == QueueImage::STATUS_PROCESSED))
   end
 
   def visible?
-    (user.admin? && record.status == ConstHelper::STATUS_HIDDEN) || (user.user? && user.id == record.client_id &&
-      record.status == ConstHelper::STATUS_HIDDEN)
+    (user.admin? && record.status == QueueImage::STATUS_HIDDEN) || (user.user? && user.id == record.client_id &&
+      record.status == QueueImage::STATUS_HIDDEN)
   end
 
   def hidden?
-    (user.admin? && record.status != ConstHelper::STATUS_HIDDEN) || (user.user? && user.id == record.client_id &&
-      record.status == ConstHelper::STATUS_PROCESSED)
+    (user.admin? && record.status != QueueImage::STATUS_HIDDEN) || (user.user? && user.id == record.client_id &&
+      record.status == QueueImage::STATUS_PROCESSED)
   end
 
   def like_image?

@@ -1,6 +1,98 @@
 require 'rails_helper'
 
 RSpec.describe QueueImage, type: :model do
+  describe 'status constants' do
+    it 'defines correct status constants' do
+      expect(QueueImage::STATUS_DELETED).to eq(-100)
+      expect(QueueImage::STATUS_ERROR).to eq(-1)
+      expect(QueueImage::STATUS_HIDDEN).to eq(0)
+      expect(QueueImage::STATUS_NOT_PROCESSED).to eq(1)
+      expect(QueueImage::STATUS_IN_PROCESS).to eq(2)
+      expect(QueueImage::STATUS_PROCESSED).to eq(11)
+      expect(QueueImage::STATUS_PROCESSED_BY_BOT).to eq(101)
+    end
+  end
+
+  describe '#get_queue_item_status' do
+    let(:mock_item) { double('item') }
+
+    context 'when status is STATUS_DELETED' do
+      it 'returns "Deleted"' do
+        item = QueueImage.new(status: QueueImage::STATUS_DELETED)
+        expect(item.get_queue_item_status).to eq('Deleted')
+      end
+    end
+
+    context 'when status is STATUS_ERROR' do
+      it 'returns "Error during processing"' do
+        item = QueueImage.new(status: QueueImage::STATUS_ERROR)
+        expect(item.get_queue_item_status).to eq('Error during processing')
+      end
+    end
+
+    context 'when status is STATUS_HIDDEN' do
+      it 'returns "Hidden"' do
+        item = QueueImage.new(status: QueueImage::STATUS_HIDDEN)
+        expect(item.get_queue_item_status).to eq('Hidden')
+      end
+    end
+
+    context 'when status is STATUS_NOT_PROCESSED' do
+      it 'returns "Waiting for processing"' do
+        item = QueueImage.new(status: QueueImage::STATUS_NOT_PROCESSED)
+        expect(item.get_queue_item_status).to eq('Waiting for processing')
+      end
+    end
+
+    context 'when status is STATUS_IN_PROCESS' do
+      it 'returns "Processing"' do
+        item = QueueImage.new(status: QueueImage::STATUS_IN_PROCESS)
+        expect(item.get_queue_item_status).to eq('Processing')
+      end
+    end
+
+    context 'when status is STATUS_PROCESSED' do
+      context 'when ptime is present' do
+        it 'returns processed message with time' do
+          time = Time.new(2023, 1, 1, 14, 30, 45)
+          item = QueueImage.new(status: QueueImage::STATUS_PROCESSED, ptime: time)
+          expect(item.get_queue_item_status).to eq('Processed in 14:30:45')
+        end
+      end
+
+      context 'when ptime is nil' do
+        it 'returns processed message without time' do
+          item = QueueImage.new(status: QueueImage::STATUS_PROCESSED, ptime: nil)
+          expect(item.get_queue_item_status).to eq('Processed in ')
+        end
+      end
+    end
+
+    context 'when status is STATUS_PROCESSED_BY_BOT' do
+      context 'when ptime is present' do
+        it 'returns bot processed message with time' do
+          time = Time.new(2023, 1, 1, 15, 45, 30)
+          item = QueueImage.new(status: QueueImage::STATUS_PROCESSED_BY_BOT, ptime: time)
+          expect(item.get_queue_item_status).to eq('Processed by bot in 15:45:30')
+        end
+      end
+
+      context 'when ptime is nil' do
+        it 'returns bot processed message without time' do
+          item = QueueImage.new(status: QueueImage::STATUS_PROCESSED_BY_BOT, ptime: nil)
+          expect(item.get_queue_item_status).to eq('Processed by bot in ')
+        end
+      end
+    end
+
+    context 'when status is unknown' do
+      it 'returns nil for unknown status' do
+        item = QueueImage.new(status: 999)
+        expect(item.get_queue_item_status).to eq('Undefined')
+      end
+    end
+  end
+
   describe 'associations' do
     it { should belong_to(:client) }
     it { should belong_to(:content) }
@@ -143,28 +235,28 @@ RSpec.describe QueueImage, type: :model do
     let(:queue_image) { create(:queue_image) }
 
     it 'can transition from not_processed to in_process' do
-      expect(queue_image.status).to eq(1) # STATUS_NOT_PROCESSED
-      queue_image.update!(status: 2, progress: 25.0) # STATUS_IN_PROCESS
-      expect(queue_image.status).to eq(2)
+      expect(queue_image.status).to eq(QueueImage::STATUS_NOT_PROCESSED) # STATUS_NOT_PROCESSED
+      queue_image.update!(status: QueueImage::STATUS_IN_PROCESS, progress: 25.0) # STATUS_IN_PROCESS
+      expect(queue_image.status).to eq(QueueImage::STATUS_IN_PROCESS)
       expect(queue_image.progress).to eq(25.0)
     end
 
     it 'can transition to processed' do
       queue_image.update!(
-        status: 11, # STATUS_PROCESSED
+        status: QueueImage::STATUS_PROCESSED, # STATUS_PROCESSED
         progress: 100.0,
         ftime: Time.current,
         ptime: Time.current - 5.minutes
       )
-      expect(queue_image.status).to eq(11)
+      expect(queue_image.status).to eq(QueueImage::STATUS_PROCESSED)
       expect(queue_image.progress).to eq(100.0)
       expect(queue_image.ftime).to be_present
       expect(queue_image.ptime).to be_present
     end
 
     it 'can transition to error' do
-      queue_image.update!(status: -1, progress: 0.0) # STATUS_ERROR
-      expect(queue_image.status).to eq(-1)
+      queue_image.update!(status: QueueImage::STATUS_ERROR, progress: 0.0) # STATUS_ERROR
+      expect(queue_image.status).to eq(QueueImage::STATUS_ERROR)
       expect(queue_image.progress).to eq(0.0)
     end
   end
@@ -193,7 +285,7 @@ RSpec.describe QueueImage, type: :model do
     let(:queue_image) { create(:queue_image) }
 
     it 'sets default status to 1' do
-      expect(queue_image.status).to eq(1)
+      expect(queue_image.status).to eq(QueueImage::STATUS_NOT_PROCESSED)
     end
 
     it 'sets default init_str to empty string' do
@@ -205,7 +297,7 @@ RSpec.describe QueueImage, type: :model do
     end
 
     it 'sets default end_status to 11' do
-      expect(queue_image.end_status).to eq(11)
+      expect(queue_image.end_status).to eq(QueueImage::STATUS_PROCESSED)
     end
 
     it 'sets default likes_count to 0' do

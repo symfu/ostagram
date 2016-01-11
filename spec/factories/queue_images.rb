@@ -3,45 +3,45 @@ FactoryBot.define do
     association :client
     association :content
     association :style
-    status { 1 } # STATUS_NOT_PROCESSED
+    status { QueueImage::STATUS_NOT_PROCESSED }
     result { '' }
     ptime { nil }
     stime { Time.current }
     ftime { nil }
-    end_status { 11 } # STATUS_PROCESSED
+    end_status { QueueImage::STATUS_PROCESSED }
     likes_count { 0 }
     progress { 0.0 }
     
     trait :in_process do
-      status { 2 } # STATUS_IN_PROCESS
+      status { QueueImage::STATUS_IN_PROCESS }
       progress { 50.0 }
     end
     
     trait :processed do
-      status { 11 } # STATUS_PROCESSED
+      status { QueueImage::STATUS_PROCESSED }
       progress { 100.0 }
       ftime { Time.current }
       ptime { Time.current - 5.minutes }
     end
     
     trait :processed_by_bot do
-      status { 101 } # STATUS_PROCESSED_BY_BOT
+      status { QueueImage::STATUS_PROCESSED_BY_BOT }
       progress { 100.0 }
       ftime { Time.current }
       ptime { Time.current - 10.minutes }
     end
     
     trait :error do
-      status { -1 } # STATUS_ERROR
+      status { QueueImage::STATUS_ERROR }
       progress { 0.0 }
     end
     
     trait :deleted do
-      status { -100 } # STATUS_DELETED
+      status { QueueImage::STATUS_DELETED }
     end
     
     trait :hidden do
-      status { 0 } # STATUS_HIDDEN
+      status { QueueImage::STATUS_HIDDEN }
     end
     
     trait :with_pimages do

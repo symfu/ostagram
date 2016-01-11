@@ -30,7 +30,7 @@ RSpec.describe Content, type: :model do
     let(:content) { create(:content) }
 
     it 'sets default status to 0' do
-      expect(content.status).to eq(0) # STATUS_HIDDEN
+      expect(content.status).to eq(Content::STATUS_HIDDEN)
     end
   end
 
@@ -65,13 +65,8 @@ RSpec.describe Content, type: :model do
 
   describe 'status values' do
     it 'accepts valid status values' do
-      expect(build(:content, status: -100)).to be_valid # STATUS_DELETED
-      expect(build(:content, status: -1)).to be_valid   # STATUS_ERROR
-      expect(build(:content, status: 0)).to be_valid    # STATUS_HIDDEN
-      expect(build(:content, status: 1)).to be_valid    # STATUS_NOT_PROCESSED
-      expect(build(:content, status: 2)).to be_valid    # STATUS_IN_PROCESS
-      expect(build(:content, status: 11)).to be_valid   # STATUS_PROCESSED
-      expect(build(:content, status: 101)).to be_valid  # STATUS_PROCESSED_BY_BOT
+      expect(build(:content, status: Content::STATUS_HIDDEN)).to be_valid    
+      expect(build(:content, status: Content::BOT_CONTENT_IMAGE)).to be_valid 
     end
   end
 
@@ -122,31 +117,6 @@ RSpec.describe Content, type: :model do
     end
   end
 
-  describe 'status transitions' do
-    let(:content) { create(:content) }
-
-    it 'can transition from hidden to active' do
-      expect(content.status).to eq(0) # STATUS_HIDDEN
-      content.update!(status: 1) # STATUS_NOT_PROCESSED
-      expect(content.status).to eq(1)
-    end
-
-    it 'can transition to processed' do
-      content.update!(status: 11) # STATUS_PROCESSED
-      expect(content.status).to eq(11)
-    end
-
-    it 'can transition to error' do
-      content.update!(status: -1) # STATUS_ERROR
-      expect(content.status).to eq(-1)
-    end
-
-    it 'can transition to deleted' do
-      content.update!(status: -100) # STATUS_DELETED
-      expect(content.status).to eq(-100)
-    end
-  end
-
   describe 'model validations' do
     it 'enforces image presence' do
       expect {
@@ -165,7 +135,7 @@ RSpec.describe Content, type: :model do
 
     it 'updates updated_at when modified' do
       original_updated_at = content.updated_at
-      content.update!(status: 1)
+      content.update!(status: Content::BOT_CONTENT_IMAGE)
       expect(content.updated_at).to be > original_updated_at
     end
   end
@@ -188,21 +158,4 @@ RSpec.describe Content, type: :model do
     end
   end
 
-  describe 'scopes and queries' do
-    let!(:hidden_content) { create(:content, status: 0) }
-    let!(:active_content) { create(:content, status: 1) }
-    let!(:processed_content) { create(:content, status: 11) }
-
-    it 'can find content by status' do
-      expect(Content.where(status: 0)).to include(hidden_content)
-      expect(Content.where(status: 1)).to include(active_content)
-      expect(Content.where(status: 11)).to include(processed_content)
-    end
-
-    it 'can find active content' do
-      active_contents = Content.where('status > ?', 0)
-      expect(active_contents).to include(active_content, processed_content)
-      expect(active_contents).not_to include(hidden_content)
-    end
-  end
 end

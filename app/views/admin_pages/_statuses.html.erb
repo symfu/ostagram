@@ -1,17 +1,17 @@
 <div class="statuses">
-  <%= link_to "DELETED", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: ConstHelper::STATUS_DELETED), method: :put, remote: true %>
-  <%= link_to "ERROR", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: ConstHelper::STATUS_ERROR), method: :put, remote: true %>
-  <%= link_to "HIDDEN", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: ConstHelper::STATUS_HIDDEN), method: :put, remote: true %>
-  <%= link_to "WAITING", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: ConstHelper::STATUS_NOT_PROCESSED), method: :put, remote: true %>
-  <%= link_to "PROCESSING", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: ConstHelper::STATUS_IN_PROCESS), method: :put, remote: true %>
-  <%= link_to "PROCESSED", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: ConstHelper::STATUS_PROCESSED), method: :put, remote: true %>
+  <%= link_to "DELETED", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: QueueImage::STATUS_DELETED), method: :put, remote: true %>
+<%= link_to "ERROR", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: QueueImage::STATUS_ERROR), method: :put, remote: true %>
+<%= link_to "HIDDEN", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: QueueImage::STATUS_HIDDEN), method: :put, remote: true %>
+<%= link_to "WAITING", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: QueueImage::STATUS_NOT_PROCESSED), method: :put, remote: true %>
+<%= link_to "PROCESSING", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: QueueImage::STATUS_IN_PROCESS), method: :put, remote: true %>
+<%= link_to "PROCESSED", url_for(controller: 'admin_pages', action: 'update_queue_status', id: item.id, status: QueueImage::STATUS_PROCESSED), method: :put, remote: true %>
 
   <br>
-  <%= link_to "REMOVE BOT FILTER", url_for(controller: 'admin_pages', action: 'update_style_status', id: item.id, status: 0), method: :put, remote: true %>
+  <%= link_to "REMOVE BOT FILTER", url_for(controller: 'admin_pages', action: 'update_style_status', id: item.id, status: Style::STATUS_HIDDEN), method: :put, remote: true %>
   <br>
-  <%= link_to "GIVE BOT FILTER", url_for(controller: 'admin_pages', action: 'update_style_status', id: item.id, status: ConstHelper::BOT_STYLE_IMAGE), method: :put, remote: true %>
+  <%= link_to "GIVE BOT FILTER", url_for(controller: 'admin_pages', action: 'update_style_status', id: item.id, status: Style::BOT_STYLE_IMAGE), method: :put, remote: true %>
   <br>
-  <%= link_to "REMOVE CONTENT FROM BOT", url_for(controller: 'admin_pages', action: 'update_content_status', id: item.id, status: 0), method: :put, remote: true %>
+  <%= link_to "REMOVE CONTENT FROM BOT", url_for(controller: 'admin_pages', action: 'update_content_status', id: item.id, status: Content::STATUS_HIDDEN), method: :put, remote: true %>
   <br>
-  <%= link_to "GIVE CONTENT TO BOT", url_for(controller: 'admin_pages', action: 'update_content_status', id: item.id, status: ConstHelper::BOT_CONTENT_IMAGE), method: :put, remote: true %>
+  <%= link_to "GIVE CONTENT TO BOT", url_for(controller: 'admin_pages', action: 'update_content_status', id: item.id, status: Content::BOT_CONTENT_IMAGE), method: :put, remote: true %>
 </div>

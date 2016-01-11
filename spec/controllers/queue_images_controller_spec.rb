@@ -239,7 +239,7 @@ RSpec.describe QueueImagesController, type: :controller do
     it 'updates status to STATUS_DELETED' do
       delete :destroy, id: queue_image.id
       queue_image.reload
-      expect(queue_image.status).to eq(ConstHelper::STATUS_DELETED)
+              expect(queue_image.status).to eq(QueueImage::STATUS_DELETED)
     end
 
     it 'redirects to queue_images_url with notice' do
@@ -255,12 +255,12 @@ RSpec.describe QueueImagesController, type: :controller do
   end
 
   describe 'PUT #visible' do
-    before { queue_image.update(status: ConstHelper::STATUS_HIDDEN) }
+          before { queue_image.update(status: QueueImage::STATUS_HIDDEN) }
 
     it 'updates status to STATUS_PROCESSED' do
       put :visible, id: queue_image.id
       queue_image.reload
-      expect(queue_image.status).to eq(ConstHelper::STATUS_PROCESSED)
+              expect(queue_image.status).to eq(QueueImage::STATUS_PROCESSED)
     end
 
     it 'redirects to queue_images_url with notice' do
@@ -276,12 +276,12 @@ RSpec.describe QueueImagesController, type: :controller do
   end
 
   describe 'PUT #hidden' do
-    before { queue_image.update(status: ConstHelper::STATUS_PROCESSED) }
+          before { queue_image.update(status: QueueImage::STATUS_PROCESSED) }
 
     it 'updates status to STATUS_HIDDEN' do
       put :hidden, id: queue_image.id
       queue_image.reload
-      expect(queue_image.status).to eq(ConstHelper::STATUS_HIDDEN)
+              expect(queue_image.status).to eq(QueueImage::STATUS_HIDDEN)
     end
 
     it 'redirects to queue_images_url with notice' do

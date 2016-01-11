@@ -80,7 +80,7 @@ class QueueImagesController < ApplicationController
   # DELETE /queue_images/1
   # DELETE /queue_images/1.json
   def destroy
-    @queue_image.update(status: STATUS_DELETED)
+    @queue_image.update(status: QueueImage::STATUS_DELETED)
     respond_to do |format|
       format.html { redirect_to queue_images_url, notice: 'Images deleted.' }
       format.json { head :no_content }
@@ -88,7 +88,7 @@ class QueueImagesController < ApplicationController
   end
 
   def visible
-    @queue_image.update(status: STATUS_PROCESSED)
+    @queue_image.update(status: QueueImage::STATUS_PROCESSED)
     respond_to do |format|
       format.html { redirect_to queue_images_url, notice: 'Images opened.' }
       format.json { head :no_content }
@@ -96,7 +96,7 @@ class QueueImagesController < ApplicationController
   end
 
   def hidden
-    @queue_image.update(status: STATUS_HIDDEN)
+    @queue_image.update(status: QueueImage::STATUS_HIDDEN)
     respond_to do |format|
       format.html { redirect_to queue_images_url, notice: 'Images hidden.' }
       format.json { head :no_content }
@@ -142,10 +142,10 @@ class QueueImagesController < ApplicationController
       @queue_image = current_client.queue_images.new()
       @queue_image.content_id = ci.id
       @queue_image.style_id = si.id
-      @queue_image.status = STATUS_NOT_PROCESSED
-      @queue_image.end_status = STATUS_PROCESSED
+      @queue_image.status = QueueImage::STATUS_NOT_PROCESSED
+      @queue_image.end_status = QueueImage::STATUS_PROCESSED
       if queue_params[:end_status].nil?
-        @queue_image.end_status = STATUS_PROCESSED
+        @queue_image.end_status = QueueImage::STATUS_PROCESSED
       else
         @queue_image.end_status = queue_params[:end_status].to_i
       end

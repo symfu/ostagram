@@ -2,15 +2,15 @@ FactoryBot.define do
   factory :style do
     image { File.open(Rails.root.join('spec', 'fixtures', 'test_style.jpg')) }
     init { 'starry_night' }
-    status { 0 } # STATUS_HIDDEN
+    status { QueueImage::STATUS_HIDDEN }
     use_counter { 0 }
     
     trait :active do
-      status { 1 } # STATUS_NOT_PROCESSED
+      status { QueueImage::STATUS_NOT_PROCESSED }
     end
     
     trait :processed do
-      status { 11 } # STATUS_PROCESSED
+      status { QueueImage::STATUS_PROCESSED }
     end
     
     trait :popular do

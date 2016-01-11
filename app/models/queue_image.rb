@@ -1,4 +1,13 @@
 class QueueImage < ActiveRecord::Base
+  # Status constants
+  STATUS_DELETED = -100
+  STATUS_ERROR = -1
+  STATUS_HIDDEN = 0
+  STATUS_NOT_PROCESSED = 1
+  STATUS_IN_PROCESS = 2
+  STATUS_PROCESSED = 11
+  STATUS_PROCESSED_BY_BOT = 101
+
   has_many :pimages, dependent: :destroy
   belongs_to :client
   belongs_to :content
@@ -11,6 +20,19 @@ class QueueImage < ActiveRecord::Base
   
   after_commit :update_likes_count, on: [:create, :update, :destroy]
   
+  def get_queue_item_status
+    case self.status
+    when STATUS_DELETED then return "Deleted"
+    when STATUS_ERROR then return "Error during processing"
+    when STATUS_HIDDEN then return "Hidden"
+    when STATUS_NOT_PROCESSED then return "Waiting for processing"
+    when STATUS_IN_PROCESS then return "Processing"
+    when STATUS_PROCESSED then return "Processed in #{self.ptime.strftime("%H:%M:%S") if self.ptime.present?}"
+    when STATUS_PROCESSED_BY_BOT then return "Processed by bot in #{self.ptime.strftime("%H:%M:%S") if self.ptime.present?}"
+    else return "Undefined"
+    end
+  end
+
   def time_ago
     return '' if updated_at.nil?
     t_ago = (Time.now - updated_at) / 60

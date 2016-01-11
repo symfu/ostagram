@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'Queue Images', type: :feature do
   let(:client) { create(:client, :confirmed) }
   let(:admin) { create(:client, :admin, :confirmed) }
-  let(:style) { create(:style, status: 201) } # GALLERY_STYLE_IMAGE
+  let(:style) { create(:style, status: Style::GALLERY_STYLE_IMAGE) } # GALLERY_STYLE_IMAGE
   let(:queue_image) { create(:queue_image, client: client, style: style) }
 
 
@@ -78,7 +78,7 @@ RSpec.feature 'Queue Images', type: :feature do
       attach_file 'queue_image[style_image]', Rails.root.join('spec', 'fixtures', 'test_avatar.jpg')
       
       fill_in 'queue_image[init]', with: '-gpu 0 -backend cudnn -image_size 500'
-      fill_in 'queue_image[end_status]', with: '102'
+      fill_in 'queue_image[end_status]', with: QueueImage::STATUS_PROCESSED_BY_BOT.to_s
       
       click_button 'Add to processing'
       
@@ -115,25 +115,25 @@ RSpec.feature 'Queue Images', type: :feature do
 
     scenario 'User can make image visible' do
       sign_in client
-      hidden_image = create(:queue_image, client: client, status: 0) # STATUS_HIDDEN
+      hidden_image = create(:queue_image, client: client, status: QueueImage::STATUS_HIDDEN) # STATUS_HIDDEN
       
       page.driver.browser.put "/queue_images/#{hidden_image.id}/visible"
       
-      expect(hidden_image.reload.status).to eq(11) # STATUS_PROCESSED
+      expect(hidden_image.reload.status).to eq(QueueImage::STATUS_PROCESSED) # STATUS_PROCESSED
     end
 
     scenario 'User can hide image' do
       sign_in client
-      visible_image = create(:queue_image, client: client, status: 11) # STATUS_PROCESSED
+      visible_image = create(:queue_image, client: client, status: QueueImage::STATUS_PROCESSED) # STATUS_PROCESSED
       
       page.driver.browser.put "/queue_images/#{visible_image.id}/hidden"
       
-      expect(visible_image.reload.status).to eq(0) # STATUS_HIDDEN
+      expect(visible_image.reload.status).to eq(QueueImage::STATUS_HIDDEN) # STATUS_HIDDEN
     end
 
     scenario 'User can delete image' do
       sign_in client
-      deletable_image = create(:queue_image, client: client, status: 1) # STATUS_NOT_PROCESSED
+      deletable_image = create(:queue_image, client: client, status: QueueImage::STATUS_NOT_PROCESSED) # STATUS_NOT_PROCESSED
       visit queue_images_path
       
       first('a', text: 'DELETE').click
@@ -189,7 +189,7 @@ RSpec.feature 'Queue Images', type: :feature do
 
     scenario 'Gallery view shows available styles' do
       sign_in client
-      create_list(:style, 3, status: 201) # GALLERY_STYLE_IMAGE
+      create_list(:style, 3, status: Style::GALLERY_STYLE_IMAGE) # GALLERY_STYLE_IMAGE
       
       visit new_queue_image_path(view_style: 1)
       

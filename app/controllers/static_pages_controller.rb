@@ -21,9 +21,9 @@ class StaticPagesController < ApplicationController
   def lenta
     par = params[:last_days]
     if !par.nil? && par.to_i
-      @items = QueueImage.where("status = 11").last_n_days(par.to_i).order('likes_count DESC, ftime DESC').paginate(:page => params[:page], :per_page => 6)
+      @items = QueueImage.where("status = #{QueueImage::STATUS_PROCESSED}").last_n_days(par.to_i).order('likes_count DESC, ftime DESC').paginate(:page => params[:page], :per_page => 6)
     else
-      @items = QueueImage.where("status = 11").order('ftime DESC').paginate(:page => params[:page], :per_page => 6)
+              @items = QueueImage.where("status = #{QueueImage::STATUS_PROCESSED}").order('ftime DESC').paginate(:page => params[:page], :per_page => 6)
     end
 
   end

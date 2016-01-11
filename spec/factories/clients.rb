@@ -5,10 +5,10 @@ FactoryBot.define do
     avatar { File.open(Rails.root.join('spec', 'fixtures', 'test_avatar.jpg')) }
     password { 'password123' }
     password_confirmation { 'password123' }
-    role_id { 0 } # CLIENT_TYPE_USER
+    role_id { Client::CLIENT_TYPE_USER }
     
     trait :admin do
-      role_id { 300 } # CLIENT_TYPE_ADMIN
+      role_id { Client::CLIENT_TYPE_ADMIN }
     end
     
     trait :confirmed do

@@ -115,14 +115,14 @@ class ImageJob
   end
 
   def get_images_from_queue
-    cl = Client.find_by_sql("select * from clients c where lastprocess is null and exists (select * from queue_images q where c.id = q.client_id and status = 1) order by created_at ASC")
+          cl = Client.find_by_sql("select * from clients c where lastprocess is null and exists (select * from queue_images q where c.id = q.client_id and status = #{QueueImage::STATUS_NOT_PROCESSED}) order by created_at ASC")
     if cl.count == 0
-      cl = Client.find_by_sql("select * from clients c where exists (select * from queue_images q where c.id = q.client_id and status = #{STATUS_NOT_PROCESSED}) order by lastprocess ASC")
+      cl = Client.find_by_sql("select * from clients c where exists (select * from queue_images q where c.id = q.client_id and status = #{QueueImage::STATUS_NOT_PROCESSED}) order by lastprocess ASC")
     end
     return nil if cl.count == 0
     cl = cl.first
     log("Client: #{cl.attributes}")
-    cl.queue_images.where("status = 1").order('created_at ASC').first
+    cl.queue_images.where("status = #{QueueImage::STATUS_NOT_PROCESSED}").order('created_at ASC').first
   end
 
   def execute_debug
@@ -138,7 +138,7 @@ class ImageJob
         download_n_save_result(10, item)
         #
         process_time = Time.at(Time.now - process_time)
-        item.update({ :status => STATUS_PROCESSED, :ftime => Time.now, :ptime => process_time })
+        item.update({ :status => QueueImage::STATUS_PROCESSED, :ftime => Time.now, :ptime => process_time })
       else
         log "-----------------------Stop Demon---------------------------"
         return "Zero"
@@ -174,12 +174,12 @@ class ImageJob
 
     if !set_init_str(item)
       err = "Init string ERROR"
-      item.update({ :status => STATUS_ERROR, :result => err })
+      item.update({ :status => QueueImage::STATUS_ERROR, :result => err })
       log err
       return err
     end
     #
-    item.update({ :status => STATUS_IN_PROCESS, :stime => process_time, :init_str => @init_params })
+    item.update({ :status => QueueImage::STATUS_IN_PROCESS, :stime => process_time, :init_str => @init_params })
     item.style.update(use_counter: item.style.use_counter + 1)
     # Check connection to workserver
     log "item.update"
@@ -212,7 +212,7 @@ class ImageJob
       item.update({ :status => item.end_status, :ftime => Time.now, :ptime => process_time })
       "OK"
     else
-      item.update({ :status => STATUS_ERROR, :result => errors, :ftime => Time.now, :ptime => process_time })
+      item.update({ :status => QueueImage::STATUS_ERROR, :result => errors, :ftime => Time.now, :ptime => process_time })
       errors += check_neural_start
       ImageMailer.send_error(@admin_email, "", item, errors).deliver_now
       log "wait_images: #{errors}"

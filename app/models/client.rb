@@ -1,5 +1,8 @@
 class Client < ActiveRecord::Base
-  include ConstHelper
+  # Client type constants
+  CLIENT_TYPE_ADMIN = 300
+  CLIENT_TYPE_USER = 0
+  
   has_many :queue_images, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :pimages, through: :queue_images

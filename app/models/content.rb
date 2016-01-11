@@ -1,4 +1,7 @@
 class Content < ActiveRecord::Base
+  STATUS_HIDDEN = 0
+  BOT_CONTENT_IMAGE = 101
+  
   has_many :queue_images, dependent: :destroy
   has_many :clients, through: :queue_images
   has_many :styles, through: :queue_images

@@ -35,18 +35,18 @@
     <span class="timestamp">
             <% if item.status < 0 %>
                 <p> Error during processing </p>
-            <% elsif item.status == 1 %>
+            <% elsif item.status == QueueImage::STATUS_NOT_PROCESSED %>
                 <p> Waiting for processing </p>
-            <% elsif item.status == 2 %>
+                          <% elsif item.status == QueueImage::STATUS_IN_PROCESS %>
                 <p> Processed at <%= item.pimages.count * 10 %>% </p>
-            <% elsif item.status >= 10 %>
+                          <% elsif item.status >= QueueImage::STATUS_PROCESSED %>
                 <p> Processed in <%= item.ptime.strftime("%H:%M:%S") if !item.ptime.nil? %> </p>
             <% end %>
           </span>
 
     <span class="user">
             <p> </p>
-      <% if debug || item.status != 1 %>
+                <% if debug || item.status != QueueImage::STATUS_NOT_PROCESSED %>
             <%= link_to "delete", item, method: :delete, data: { confirm: "Are you sure you want to delete?" } %>
              <% end %>
           </span>

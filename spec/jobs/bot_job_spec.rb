@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe BotJob, type: :job do
   let(:bot_job) { BotJob.new }
   let(:admin_client) { create(:client, email: 'xxx@gmail.com') }
-  let(:content) { create(:content, status: ConstHelper::BOT_CONTENT_IMAGE) }
-  let(:style) { create(:style, status: ConstHelper::BOT_STYLE_IMAGE) }
+  let(:content) { create(:content, status: Content::BOT_CONTENT_IMAGE) }
+  let(:style) { create(:style, status: Style::BOT_STYLE_IMAGE) }
 
   before do
     bot_job.instance_variable_set(:@admin, admin_client)
@@ -19,7 +19,7 @@ RSpec.describe BotJob, type: :job do
         expect(bot_job.instance_variable_get(:@worker_name)).to eq(:bot1)
         expect(bot_job.instance_variable_get(:@admin_email)).to eq('xxx@gmail.com')
         expect(bot_job.instance_variable_get(:@sleep_time)).to eq(10)
-        expect(bot_job.instance_variable_get(:@end_status)).to eq(11)
+        expect(bot_job.instance_variable_get(:@end_status)).to eq(QueueImage::STATUS_PROCESSED)
         expect(bot_job.instance_variable_get(:@debug)).to eq(true)
       end
 
@@ -122,8 +122,8 @@ RSpec.describe BotJob, type: :job do
       
       bot_job.create_queue(content, style, 'init_string')
       
-      expect(new_queue_image.status).to eq(ConstHelper::STATUS_NOT_PROCESSED)
-      expect(new_queue_image.end_status).to eq(11)
+      expect(new_queue_image.status).to eq(QueueImage::STATUS_NOT_PROCESSED)
+      expect(new_queue_image.end_status).to eq(QueueImage::STATUS_PROCESSED)
       expect(new_queue_image.content_id).to eq(content.id)
       expect(new_queue_image.style_id).to eq(style.id)
       expect(new_queue_image.init_str).to eq('init_string')
@@ -140,7 +140,7 @@ RSpec.describe BotJob, type: :job do
 
         it 'checks for any not processed or in process items' do
           queue_double = double('QueueImage')
-          allow(QueueImage).to receive(:where).with("status = #{ConstHelper::STATUS_NOT_PROCESSED} or status = #{ConstHelper::STATUS_IN_PROCESS}").and_return(queue_double)
+          allow(QueueImage).to receive(:where).with("status = #{QueueImage::STATUS_NOT_PROCESSED} or status = #{QueueImage::STATUS_IN_PROCESS}").and_return(queue_double)
           allow(queue_double).to receive(:count).and_return(0)
           bot_job.send(:check_idle)
         end
@@ -153,7 +153,7 @@ RSpec.describe BotJob, type: :job do
 
         it 'checks only for admin items' do
           queue_double = double('QueueImage')
-          allow(QueueImage).to receive(:where).with("client_id = #{admin_client.id} and status = #{ConstHelper::STATUS_NOT_PROCESSED}").and_return(queue_double)
+          allow(QueueImage).to receive(:where).with("client_id = #{admin_client.id} and status = #{QueueImage::STATUS_NOT_PROCESSED}").and_return(queue_double)
           allow(queue_double).to receive(:count).and_return(0)
           bot_job.send(:check_idle)
         end
@@ -177,21 +177,21 @@ RSpec.describe BotJob, type: :job do
     describe '#get_random_style' do
       it 'returns a random style with BOT_STYLE_IMAGE status' do
         styles_double = double('Style')
-        allow(Style).to receive(:where).with(status: ConstHelper::BOT_STYLE_IMAGE).and_return(styles_double)
+        allow(Style).to receive(:where).with(status: Style::BOT_STYLE_IMAGE).and_return(styles_double)
         allow(styles_double).to receive(:count).and_return(0)
         bot_job.send(:get_random_style)
       end
 
       it 'returns nil when no styles are available' do
         styles_double = double('Style')
-        allow(Style).to receive(:where).with(status: ConstHelper::BOT_STYLE_IMAGE).and_return(styles_double)
+        allow(Style).to receive(:where).with(status: Style::BOT_STYLE_IMAGE).and_return(styles_double)
         allow(styles_double).to receive(:count).and_return(0)
         expect(bot_job.send(:get_random_style)).to be_nil
       end
 
       it 'returns a random style when styles are available' do
         styles_double = double('Style')
-        allow(Style).to receive(:where).with(status: ConstHelper::BOT_STYLE_IMAGE).and_return(styles_double)
+        allow(Style).to receive(:where).with(status: Style::BOT_STYLE_IMAGE).and_return(styles_double)
         allow(styles_double).to receive(:count).and_return(1)
         allow(styles_double).to receive(:[]).with(0).and_return(style)
         
@@ -202,21 +202,21 @@ RSpec.describe BotJob, type: :job do
     describe '#get_random_content' do
       it 'returns a random content with BOT_CONTENT_IMAGE status' do
         contents_double = double('Content')
-        allow(Content).to receive(:where).with(status: ConstHelper::BOT_CONTENT_IMAGE).and_return(contents_double)
+        allow(Content).to receive(:where).with(status: Content::BOT_CONTENT_IMAGE).and_return(contents_double)
         allow(contents_double).to receive(:count).and_return(0)
         bot_job.send(:get_random_content)
       end
 
       it 'returns nil when no content is available' do
         contents_double = double('Content')
-        allow(Content).to receive(:where).with(status: ConstHelper::BOT_CONTENT_IMAGE).and_return(contents_double)
+        allow(Content).to receive(:where).with(status: Content::BOT_CONTENT_IMAGE).and_return(contents_double)
         allow(contents_double).to receive(:count).and_return(0)
         expect(bot_job.send(:get_random_content)).to be_nil
       end
 
       it 'returns a random content when content is available' do
         contents_double = double('Content')
-        allow(Content).to receive(:where).with(status: ConstHelper::BOT_CONTENT_IMAGE).and_return(contents_double)
+        allow(Content).to receive(:where).with(status: Content::BOT_CONTENT_IMAGE).and_return(contents_double)
         allow(contents_double).to receive(:count).and_return(1)
         allow(contents_double).to receive(:[]).with(0).and_return(content)
         

@@ -7,7 +7,7 @@ class BotJob
     @worker_name = :bot1
     @admin_email = "xxx@gmail.com"
     @sleep_time = 10
-    @end_status = 11
+            @end_status = QueueImage::STATUS_PROCESSED
     @debug = true
   end
 
@@ -61,7 +61,7 @@ class BotJob
       log("Content: #{ci.attributes}")
       log("Style: #{si.attributes}")
       if !@with_init_params
-        qi = QueueImage.where("content_id = #{ci.id} and style_id = #{si.id} and status > #{STATUS_IN_PROCESS}")
+        qi = QueueImage.where("content_id = #{ci.id} and style_id = #{si.id} and status > #{QueueImage::STATUS_IN_PROCESS}")
         if qi.count > 0
           log("Queue exists")
           next
@@ -81,7 +81,7 @@ class BotJob
           i += 1
           start_workers
         end
-        si.update(status: 103)
+        si.update(status: Style::BOT_STYLE_PROCESSED)
       else
         create_queue(ci, si, nil)
         start_workers
@@ -92,7 +92,7 @@ class BotJob
 
   def create_queue(content, style, init)
     qi = QueueImage.new
-    qi.status = STATUS_NOT_PROCESSED
+    qi.status = QueueImage::STATUS_NOT_PROCESSED
     qi.end_status = @end_status
     qi.content_id = content.id
     qi.style_id = style.id
@@ -107,15 +107,15 @@ class BotJob
 
   def check_idle
     if @user_priority
-      q = QueueImage.where("status = #{STATUS_NOT_PROCESSED} or status = #{STATUS_IN_PROCESS}")
+      q = QueueImage.where("status = #{QueueImage::STATUS_NOT_PROCESSED} or status = #{QueueImage::STATUS_IN_PROCESS}")
     else
-      q = QueueImage.where("client_id = #{@admin.id} and status = #{STATUS_NOT_PROCESSED}")
+      q = QueueImage.where("client_id = #{@admin.id} and status = #{QueueImage::STATUS_NOT_PROCESSED}")
     end
     q.count == 0
   end
 
   def get_random_style
-    si = Style.where(status: BOT_STYLE_IMAGE)
+    si = Style.where(status: Style::BOT_STYLE_IMAGE)
     count = si.count
     return nil if count == 0
     r = rand(count)
@@ -123,7 +123,7 @@ class BotJob
   end
 
   def get_random_content
-    ci = Content.where(status: BOT_CONTENT_IMAGE)
+    ci = Content.where(status: Content::BOT_CONTENT_IMAGE)
     count = ci.count
     return nil if count == 0
     r = rand(count)

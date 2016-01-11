@@ -60,8 +60,8 @@ RSpec.describe Client, type: :model do
   end
 
   describe 'role methods' do
-    let(:user_client) { create(:client, role_id: 0) }
-    let(:admin_client) { create(:client, role_id: 300) }
+    let(:user_client) { create(:client, role_id: Client::CLIENT_TYPE_USER) }
+    let(:admin_client) { create(:client, role_id: Client::CLIENT_TYPE_ADMIN) }
     let(:nil_role_client) { create(:client, role_id: nil) }
 
     describe '#user?' do

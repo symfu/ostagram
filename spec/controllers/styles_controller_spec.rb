@@ -91,12 +91,12 @@ RSpec.describe StylesController, type: :controller do
   end
 
   describe 'PUT #update' do
-    let(:valid_attributes) { { status: 2 } }
+    let(:valid_attributes) { { status: Style::BOT_STYLE_IMAGE } }
 
     it 'updates the style' do
       put :update, id: style.id, style: valid_attributes
       style.reload
-      expect(style.status).to eq(2)
+      expect(style.status).to eq(Style::BOT_STYLE_IMAGE)
     end
 
     it 'redirects to @style with notice' do
