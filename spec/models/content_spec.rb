@@ -66,7 +66,7 @@ RSpec.describe Content, type: :model do
   describe 'status values' do
     it 'accepts valid status values' do
       expect(build(:content, status: Content::STATUS_HIDDEN)).to be_valid    
-      expect(build(:content, status: Content::BOT_CONTENT_IMAGE)).to be_valid 
+      expect(build(:content, status: Content::BOT_CONTENT_IMAGE)).to be_valid
     end
   end
 

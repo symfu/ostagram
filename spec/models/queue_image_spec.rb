@@ -63,7 +63,7 @@ RSpec.describe QueueImage, type: :model do
       context 'when ptime is nil' do
         it 'returns processed message without time' do
           item = QueueImage.new(status: QueueImage::STATUS_PROCESSED, ptime: nil)
-          expect(item.get_queue_item_status).to eq('Processed in ')
+          expect(item.get_queue_item_status).to eq('Processed')
         end
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe QueueImage, type: :model do
       context 'when ptime is nil' do
         it 'returns bot processed message without time' do
           item = QueueImage.new(status: QueueImage::STATUS_PROCESSED_BY_BOT, ptime: nil)
-          expect(item.get_queue_item_status).to eq('Processed by bot in ')
+          expect(item.get_queue_item_status).to eq('Processed by bot')
         end
       end
     end

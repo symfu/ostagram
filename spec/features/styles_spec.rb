@@ -94,8 +94,8 @@ RSpec.feature 'Styles', type: :feature do
 
     scenario 'Admin can view styles by status' do
       sign_in admin
-      create_list(:style, 3, status: Style::GALLERY_STYLE_IMAGE) 
-      create_list(:style, 2, status: Style::BOT_STYLE_IMAGE) 
+      create_list(:style, 3, status: Style::GALLERY_STYLE_IMAGE)
+      create_list(:style, 2, status: Style::BOT_STYLE_IMAGE)
       
       visit styles_path(status: Style::GALLERY_STYLE_IMAGE)
       
@@ -138,7 +138,7 @@ RSpec.feature 'Styles', type: :feature do
       sign_in admin
       visit edit_style_path(style)
       
-      fill_in 'style_status', with: Style::BOT_STYLE_IMAGE.to_s 
+      fill_in 'style_status', with: Style::BOT_STYLE_IMAGE.to_s
       click_button 'Update Style'
       
       expect(page).to have_content('style was successfully updated.')
