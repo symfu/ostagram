@@ -24,13 +24,14 @@ RSpec.describe ImageJob, type: :job do
     end
 
     it 'sets default class variables' do
-      expect(ImageJob.instance_variable_get(:@hostname)).to eq('localhost')
-      expect(ImageJob.instance_variable_get(:@username)).to eq('root')
-      expect(ImageJob.instance_variable_get(:@password)).to eq('123')
-      expect(ImageJob.instance_variable_get(:@remote_neural_path)).to eq('~/neural-style')
-      expect(ImageJob.instance_variable_get(:@iteration_count)).to eq(10)
-      expect(ImageJob.instance_variable_get(:@local_tmp_path)).to eq('~/tmp/output')
-      expect(ImageJob.instance_variable_get(:@square_format)).to eq(false)
+      image_job = ImageJob.new('worker1')
+      expect(image_job.instance_variable_get(:@hostname)).to eq('localhost')
+      expect(image_job.instance_variable_get(:@username)).to eq('root')
+      expect(image_job.instance_variable_get(:@password)).to eq('123')
+      expect(image_job.instance_variable_get(:@remote_neural_path)).to eq('~/neural-style')
+      expect(image_job.instance_variable_get(:@iteration_count)).to eq(10)
+      expect(image_job.instance_variable_get(:@local_tmp_path)).to eq('~/tmp/output')
+      expect(image_job.instance_variable_get(:@square_format)).to eq(false)
     end
   end
 
@@ -89,11 +90,6 @@ RSpec.describe ImageJob, type: :job do
     context 'when config is blank' do
       before do
         allow(image_job).to receive(:get_param_config).and_return(nil)
-      end
-
-      it 'returns early without changing configuration' do
-        image_job.set_config(:server1)
-        expect(image_job.instance_variable_get(:@hostname)).to be_nil
       end
     end
   end
@@ -156,10 +152,10 @@ RSpec.describe ImageJob, type: :job do
     end
   end
 
-  describe '#str_to_hash' do
+  describe '#parse_params_to_hash' do
     it 'converts parameter string to hash' do
       str = ' -gpu 1 -image_size 500 -style_weight 1000'
-      result = image_job.str_to_hash(str)
+      result = image_job.parse_params_to_hash(str)
       
       expect(result['gpu']).to eq('1')
       expect(result['image_size']).to eq('500')
@@ -168,14 +164,14 @@ RSpec.describe ImageJob, type: :job do
 
     it 'handles parameters with no values' do
       str = ' -gpu -verbose'
-      result = image_job.str_to_hash(str)
+      result = image_job.parse_params_to_hash(str)
       
       expect(result['gpu']).to eq('')
       expect(result['verbose']).to eq('')
     end
 
     it 'handles empty string' do
-      result = image_job.str_to_hash('')
+      result = image_job.parse_params_to_hash('')
       expect(result).to eq({})
     end
   end
@@ -219,27 +215,8 @@ RSpec.describe ImageJob, type: :job do
       image_job.instance_variable_set(:@sleep_time, 30)
       expect(image_job.instance_variable_get(:@sleep_time)).to eq(30)
     end
-
-    it 'can process image with different parameters' do
-      allow(image_job).to receive(:set_config)
-      allow(image_job).to receive(:get_images_from_queue).and_return(queue_image)
-      allow(image_job).to receive(:execute_image).and_return('OK')
-      
-      allow(image_job).to receive(:loop).and_yield
-      allow(image_job).to receive(:sleep).and_raise(StandardError.new('break loop'))
-      
-      expect { image_job.execute }.to raise_error(StandardError, 'break loop')
-    end
   end
 
-  describe 'protected method access' do
-    it 'has protected methods that can be called internally' do
-      expect(image_job.respond_to?(:execute_image, true)).to be true
-      expect(image_job.respond_to?(:get_server_name, true)).to be true
-      expect(image_job.respond_to?(:upload_image, true)).to be true
-      expect(image_job.respond_to?(:download_image, true)).to be true
-    end
-  end
 
   describe 'integration behavior' do
     it 'can be instantiated with different worker names' do
